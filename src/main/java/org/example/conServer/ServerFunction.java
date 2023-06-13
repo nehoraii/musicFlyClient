@@ -4,14 +4,18 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.example.enums.ErrorsEnum;
 import org.example.enums.SendStatusEnum;
+import org.example.vo.SongsVO;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class ServerFunction {
      private String massageHead;
@@ -27,6 +31,19 @@ public class ServerFunction {
                             .uri(new URI(path))
                             .header("Content-Type", "application/json")
                             .POST(HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8)).build();
+                    break;
+                case POST_BINARY:
+                    //application/octet-stream
+                    SongsVO song=(SongsVO) user;
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(bos);
+                    oos.writeObject(song);
+                    oos.flush();
+                    byte [] data = bos.toByteArray();
+                    httpRequest = HttpRequest.newBuilder()
+                            .uri(new URI(path))
+                            .header("Content-Type", "application/json")
+                            .POST(HttpRequest.BodyPublishers.ofString(Arrays.toString(data), StandardCharsets.UTF_8)).build();
                     break;
                 case PUT:
                     httpRequest = HttpRequest.newBuilder()

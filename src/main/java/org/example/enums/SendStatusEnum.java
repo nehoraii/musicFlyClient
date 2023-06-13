@@ -4,5 +4,6 @@ public enum SendStatusEnum {
     POST,
     DELETE,
     GET,
-    PUT
+    PUT,
+    POST_BINARY
 }
